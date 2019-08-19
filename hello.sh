@@ -19,5 +19,8 @@ CONF
 
 ssh-add -K ~/.ssh/id_ed25519
 
+mkdir -p ~/git
+git clone https://github.com/dillonchr/dotfiles.git ~/git/dotfiles
+
 open https://iterm2.com/downloads/stable/iTerm2-3_3_1.zip
 
