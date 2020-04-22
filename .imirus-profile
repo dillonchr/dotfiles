@@ -1,0 +1,135 @@
+# just thought it'd be fun to include for the nostalgia
+# really I just dug this up to steal the PS1. Jacob really
+# knows his shell.
+
+alias ls='ls -acFG'
+alias grep='grep --color=auto'
+dillonXML()
+{
+	curl -X POST -d '$1' "$2"
+}
+alias xml=dillonXML
+dillonPEM()
+{
+	openssl pkcs12 -in $1.p12 -out $2.pem -nodes -clcerts
+}
+alias pem=dillonPEM
+getheader()
+{
+	curl $1 -I
+}
+newdir()
+{
+	mkdir $1
+	cd $1
+}
+
+publist() {
+      echo -en "SELECT vm_name, id FROM v_publisher WHERE enable_vm = 't';" |psql --username imirususe --host aerosmith.imirus.com -p 5432 --dbname imirusMain -tA |sort -u
+}
+
+pubinfo() {
+   publisher=${1}
+   if [ ${publisher} -eq ${publisher} 2>/dev/null ]; then 
+      #echo -en "pubname is:  "
+      echo -en "SELECT vm_name FROM v_publisher WHERE id = ${publisher};" |psql --username imirususe --host aerosmith.imirus.com -p 5432 --dbname imirusMain -tA
+   else
+      #echo -en "pubid is:  "
+      echo -en "SELECT id FROM v_publisher WHERE vm_name = '${publisher}';" |psql --username imirususe --host aerosmith.imirus.com -p 5432 --dbname imirusMain -tA
+   fi
+}
+
+titleinfo() {
+   tid="${1}"
+   result=$(echo -en "SELECT v_title_list.label, v_publisher.vm_name FROM v_title_list INNER JOIN v_publisher ON v_title_list.pub_id = v_publisher.id WHERE v_title_list.id = ${tid};" |psql --username imirususe --host aerosmith.imirus.com -p 5432 --dbname imirusMain -tA)
+   title=$(echo ${result} |cut -d "|" -f1)   
+   publisher=$(echo ${result} |cut -d "|" -f2)
+   cat <<-EOF
+
+   Publisher:  ${publisher}
+   Title:      ${title}
+   
+EOF
+}
+
+maginfo() {
+   magazine=${1}
+   result=$(echo -en "SELECT volume, issue, vm_name, v_title_list.label, issue_name, i_magazine.pub_id, i_magazine.title_id, r_product_magazine.prod_id, i_products.parent_product FROM i_magazine INNER JOIN v_publisher ON i_magazine.pub_id = v_publisher.id INNER JOIN v_title_list ON i_magazine.title_id = v_title_list.id INNER JOIN r_product_magazine ON i_magazine.id = r_product_magazine.mag_id INNER JOIN i_products ON r_product_magazine.prod_id = i_products.id WHERE i_magazine.id = ${magazine} and parent_product = 't';" |psql --username imirususe --host aerosmith.imirus.com -p 5432 --dbname imirusMain -tA)
+   volume=$(echo ${result} |cut -d "|" -f1)
+   issue=$(echo ${result} |cut -d "|" -f2)
+   publisher=$(echo ${result} |cut -d "|" -f3)
+   title=$(echo ${result} |cut -d "|" -f4)
+   name=$(echo ${result} |cut -d "|" -f5)
+   pid=$(echo ${result} |cut -d "|" -f6)
+   tid=$(echo ${result} |cut -d "|" -f7)
+   product=$(echo ${result} |cut -d "|" -f8)
+   cat <<EOF
+
+   Magazine:   ${name}
+   Publisher:  ${publisher}
+   Title:      ${title}
+   Product:    ${product}
+   Path:       /srv/www/imirus2/${pid}/${tid}/v${volume}i${issue}/
+   
+EOF
+}
+
+prodinfo() {
+   product=${1}
+   result=$(echo -en "SELECT volume, issue, vm_name, v_title_list.label, issue_name, i_magazine.pub_id, i_magazine.title_id, i_magazine.id FROM i_magazine INNER JOIN v_publisher ON i_magazine.pub_id = v_publisher.id INNER JOIN v_title_list ON i_magazine.title_id = v_title_list.id WHERE i_magazine.id = (SELECT mag_id FROM r_product_magazine WHERE prod_id = ${product});" |psql --username imirususe --host aerosmith.imirus.com -p 5432 --dbname imirusMain -tA)
+   volume=$(echo ${result} |cut -d "|" -f1)
+   issue=$(echo ${result} |cut -d "|" -f2)
+   publisher=$(echo ${result} |cut -d "|" -f3)
+   title=$(echo ${result} |cut -d "|" -f4)
+   name=$(echo ${result} |cut -d "|" -f5)
+   pid=$(echo ${result} |cut -d "|" -f6)
+   tid=$(echo ${result} |cut -d "|" -f7)
+   magid=$(echo ${result} |cut -d "|" -f8)
+   cat <<EOF
+
+   Magazine:   ${name}
+   Publisher:  ${publisher}
+   Title:      ${title}
+   MagID:      ${magid}
+   Path:       /srv/www/imirus2/${pid}/${tid}/v${volume}i${issue}/
+   
+EOF
+}
+
+customfuncs()
+{
+	echo "xml '<xml payload/>' 'url' - outputs request's response"
+	echo "getheader 'url' - outputs url's response headers"
+	echo "editbashprofile - go figure"
+	echo "pem cert_name out_name - takes certificate and changes it to a pem for APNS"
+	echo "newdir 'dirname' - mkdir 'dirname'; cd 'dirname';"
+	echo "publist - outputs a list of publishers"
+	echo "pubinfo pubid - outputs details about a certain pubid"
+	echo "titleinfo titleid - outputs details about a certain titleid"
+	echo "maginfo madid - outputs details about a certain magid"
+	echo "prodinfo prodid - outputs details about a certain prodid"
+}
+
+friday()
+{
+	echo "Tidying up"
+	rm -rf ~/Downloads/*
+	killall Xcode.app
+	killall GoogleChrome.app
+	killall Eclipse.app
+	killall SourceTree.app
+	lock
+	exit
+}
+alias xaric='/Users/dillonchr/Frameworks/xaric-0.13.6/xaric'
+alias exit='killall Terminal'
+alias editbashprofile='open -a TextWrangler ~/.bash_profile'
+PS1="\n\[\033[1;37m\] \u@\h      \[\033[1;37m\]\d \$(date +%I:%M:%S%P)\n\[\033[0;32m\]\w/\n\[\033[1;37m\]$ \[\033[0m\]"
+export PS1
+
+export PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin
+export GROOVY_HOME=/Users/dillonchr/Frameworks/groovy-2.0.5
+PATH=$PATH:$GROOVY_HOME/bin
+export JAVA_HOME=/Library/Java/Home
+export CORDOVA_IOS=/Users/dillonchr/Frameworks/phonegap-phonegap-8a3aa47/lib/ios/bin
+
