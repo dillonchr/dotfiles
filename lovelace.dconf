@@ -1,0 +1,12 @@
+[/]
+foreground-color='rgb(253,253,253)'
+visible-name='lovelace'
+palette=['rgb(40,42,54)', 'rgb(243,127,151)', 'rgb(90,222,205)', 'rgb(242,162,114)', 'rgb(136,151,244)', 'rgb(197,116,221)', 'rgb(121,230,243)', 'rgb(253,253,253)', 'rgb(65,68,88)', 'rgb(255,73,113)', 'rgb(24,227,200)', 'rgb(255,128,55)', 'rgb(85,111,255)', 'rgb(176,67,209)', 'rgb(63,220,238)', 'rgb(190,190,193)']
+cursor-background-color='rgb(234,44,113)'
+use-system-font=false
+cursor-colors-set=true
+use-theme-colors=false
+cursor-foreground-color='rgb(197,116,221)'
+font='Hack 9'
+cursor-blink-mode='on'
+background-color='rgb(29,31,40)'
