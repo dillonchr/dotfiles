@@ -36,6 +36,8 @@ cat - > ~/.config/terminator/config <<EOF
     visible_bell = True
 EOF
 
+cp .tmux.conf ~/.tmux.conf
+
 # seriously, I've used this page like 20 times in the past month
 # https://otaviovaladares.com/2018/09/30/migrating-to-nvim/
 cp .vimrc ~/.vimrc
