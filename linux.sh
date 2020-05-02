@@ -1,15 +1,15 @@
 #!/bin/bash
 set -e
 
-#chsh -s $(which zsh) $(whoami)
-#sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" "" --unattended
+chsh -s $(which zsh) $(whoami)
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" "" --unattended
 
-#git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-#git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
-#curl -s "https://raw.githubusercontent.com/caiogondim/bullet-train-oh-my-zsh-theme/master/bullet-train.zsh-theme" > "$HOME/.oh-my-zsh/custom/themes/bullet-train.zsh-theme"
+curl -s "https://raw.githubusercontent.com/caiogondim/bullet-train-oh-my-zsh-theme/master/bullet-train.zsh-theme" > "$HOME/.oh-my-zsh/custom/themes/bullet-train.zsh-theme"
 
-#mkdir -p ~/.config/terminator
+mkdir -p ~/.config/terminator
 cat - > ~/.config/terminator/config <<EOF
 [global_config]
   homogeneous_tabbar = False
@@ -48,7 +48,7 @@ let &packpath = &runtimepath
 source ~/.vimrc
 EOF
 
-#cat .zshrc >> ~/.zshrc
+cat .zshrc >> ~/.zshrc
 
 ssh-keygen -o -a 100 -t ed25519 -f ~/.ssh/id_ed25519 -C "$(whoami)@$(hostname)"
 
